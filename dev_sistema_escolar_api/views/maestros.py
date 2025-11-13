@@ -11,13 +11,14 @@ from django.contrib.auth.models import Group, User
 import json
 
 class MaestrosAll(generics.CreateAPIView):
-    # Necesita permisos de autenticación de usuario para poder acceder a la petición
+    #Obtener todos los maestros
+    # Verifica que el usuario este autenticado
     permission_classes = (permissions.IsAuthenticated,)
     def get(self, request, *args, **kwargs):
         maestros = Maestros.objects.filter(user__is_active=1).order_by("id")
-        lista = MaestroSerializer(maestros, many=True).data   
+        lista = MaestroSerializer(maestros, many=True).data
         for maestro in lista:
-            if isinstance(maestro, dict) and "materias_json" in maestro:   #
+            if isinstance(maestro, dict) and "materias_json" in maestro:
                 try:
                     maestro["materias_json"] = json.loads(maestro["materias_json"])
                 except Exception:

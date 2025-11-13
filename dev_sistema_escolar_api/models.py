@@ -57,7 +57,8 @@ class Maestros(models.Model):
     fecha_nacimiento = models.DateField(null=True, blank=True)
     cubiculo = models.CharField(max_length=50, null=True, blank=True)
     area_investigacion = models.CharField(max_length=255, null=True, blank=True)
-    materias_json = models.TextField(null=True, blank=True)  # Materias como JSON   creation = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    materias_json = models.TextField(null=True, blank=True)  # Materias como JSON   
+    creation = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     update = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
