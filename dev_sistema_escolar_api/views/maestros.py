@@ -3,6 +3,8 @@ from django.db import transaction
 from dev_sistema_escolar_api.serializers import UserSerializer
 from dev_sistema_escolar_api.serializers import *
 from dev_sistema_escolar_api.models import *
+import json
+from django.shortcuts import get_object_or_404
 from rest_framework import permissions
 from rest_framework import generics
 from rest_framework import status
@@ -27,6 +29,26 @@ class MaestrosAll(generics.CreateAPIView):
 
 class MaestroView(generics.CreateAPIView):
     serializer_class = UserSerializer
+
+    def get_permissions(self):
+        if self.request.method in ['GET', 'PUT', 'DELETE']:
+            return [permissions.IsAuthenticated()]
+        return []  # POST no requiere autenticación
+
+    permission_classes = (permissions.IsAuthenticated,)
+    def get(self, request, *args, **kwargs):
+        maestro = get_object_or_404(Maestros, id = request.GET.get("id"))
+        maestro = MaestroSerializer(maestro, many=False).data
+        
+        if "materias_json" in maestro and maestro["materias_json"]:
+            try:
+                maestro["materias_json"] = json.loads(maestro["materias_json"])
+            except:
+                maestro["materias_json"] = []
+        
+        return Response(maestro, 200)
+
+
     @transaction.atomic
     def post(self, request, *args, **kwargs):
         user = UserSerializer(data=request.data)
@@ -74,3 +96,55 @@ class MaestroView(generics.CreateAPIView):
             return Response({"maestro_created_id": maestro.id}, 201)
 
         return Response(user.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    # Actualizar datos del maestro
+    @transaction.atomic
+    def put(self, request, *args, **kwargs):
+        permission_classes = (permissions.IsAuthenticated,)
+        maestro = get_object_or_404(Maestros, id=request.data["id"])
+        
+        maestro.matricula=request.data["matricula"]
+        maestro.telefono=request.data["telefono"]
+        maestro.rfc=request.data["rfc"].upper()
+        maestro.fecha_nacimiento=request.data["fecha_nacimiento"]
+        maestro.cubiculo=request.data["cubiculo"]
+        maestro.area_investigacion=request.data["area_investigacion"]
+        maestro.materias_json=json.dumps(request.data["materias_json"], ensure_ascii=False)
+        maestro.save()
+        
+        
+        # Actualizamos los datos del usuario asociado
+        user = maestro.user
+        user.first_name = request.data["first_name"]
+        user.last_name = request.data["last_name"]
+        user.save()
+        
+        return Response({"maestro_updated_id": maestro.id }, 200)
+    
+    #eliminar maestro
+    @transaction.atomic
+    def delete(self, request, *args, **kwargs):
+        maestro = get_object_or_404(Maestros, id=request.GET.get("id"))
+        try:
+            maestro.user.delete()
+            return Response({"details":"Maestro eliminado"},200)
+        except Exception as e:
+            return Response({"details":"Algo pasó al elimiar"},400)
+        
+        #Eliminar maestro (Desactivar usuario)
+    # @transaction.atomic
+    # def delete(self, request, *args, **kwargs):
+    #     id_maestro = kwargs.get('id_maestro', None)
+    #     if id_maestro:
+    #         try:
+    #             maestro = Maestros.objects.get(id=id_maestro)
+    #             user = maestro.user
+    #             user.is_active = 0
+    #             user.save()
+    #             return Response({"message":"Maestro con ID "+str(id_maestro)+" eliminado correctamente."},200)
+    #         except Maestros.DoesNotExist:
+    #             return Response({"message":"Maestro con ID "+str(id_maestro)+" no encontrado."},404)
+    #     return Response({"message":"Se necesita el ID del maestro."},400)   
+
+
+    

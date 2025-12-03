@@ -2,6 +2,8 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+
+from dev_sistema_escolar_api.views.eventos import EventoView, EventosAll, TotalEventos
 from .views.bootstrap import VersionView
 from dev_sistema_escolar_api.views import bootstrap
 from dev_sistema_escolar_api.views import users
@@ -20,14 +22,24 @@ urlpatterns = [
         path('alumnos/', alumnos.AlumnoView.as_view()),
     #Create Maestro
         path('maestros/', maestros.MaestroView.as_view()),
+        path('maestros/<int:id>/', maestros.MaestroView.as_view()),
     #Maestro Data
         path('lista-maestros/', maestros.MaestrosAll.as_view()),
     #Aumno data
-    path('lista-alumnos/', alumnos.AlumnosAll.as_view()),
+        path('lista-alumnos/', alumnos.AlumnosAll.as_view()),
     #Login
         path('token/', auth.CustomAuthToken.as_view()),
     #Logout
-        path('logout/', auth.Logout.as_view())
+        path('logout/', auth.Logout.as_view()), 
+
+        path('eventos/', EventoView.as_view()),        # POST crear, GET por id, PUT actualizar, DELETE
+        
+        path('lista-eventos/', EventosAll.as_view()),
+       
+        #Total Users
+        path('total-usuarios/', users.TotalUsers.as_view()), 
+       
+        path('total-eventos/', TotalEventos.as_view())
 ]
 
 if settings.DEBUG:

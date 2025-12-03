@@ -8,7 +8,7 @@ class UserSerializer(serializers.ModelSerializer):
     last_name = serializers.CharField(required=True)
     email = serializers.CharField(required=True)
 
-    class Meta: #serializar todos
+    class Meta:
         model = User
         fields = ('id','first_name','last_name', 'email')
 
@@ -24,9 +24,15 @@ class AlumnoSerializer(serializers.ModelSerializer):
         model = Alumnos
         fields = '__all__'
 
-
 class MaestroSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
     class Meta:
         model = Maestros
+        fields = '__all__'
+
+class EventoAcademicoSerializer(serializers.ModelSerializer):
+    responsable = UserSerializer(read_only=True)
+    
+    class Meta:
+        model = EventoAcademico
         fields = '__all__'
