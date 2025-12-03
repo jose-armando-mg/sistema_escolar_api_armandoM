@@ -128,16 +128,6 @@ class EventoView(generics.CreateAPIView):
         
 
 class TotalEventos(generics.CreateAPIView):
-    """
-    Devuelve un JSON con el conteo de eventos por tipo:
-    {
-      "conferencia": int,
-      "taller": int,
-      "seminario": int,
-      "concurso": int
-    }
-    La implementación es tolerante a variaciones en el campo `tipo`.
-    """
     permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request, *args, **kwargs):
@@ -145,7 +135,6 @@ class TotalEventos(generics.CreateAPIView):
             # Agrupar por tipo y contar
             totals = EventoAcademico.objects.values('tipo').annotate(total=Count('id'))
 
-            # Inicializar claves que el frontend espera
             result = {
                 'conferencia': 0,
                 'taller': 0,
@@ -161,7 +150,6 @@ class TotalEventos(generics.CreateAPIView):
                 if not tipo_raw:
                     continue
 
-                # reglas de mapeo flexibles
                 if 'confer' in tipo_raw or 'conference' in tipo_raw:
                     result['conferencia'] += count
                 elif 'taller' in tipo_raw or 'workshop' in tipo_raw:
@@ -171,9 +159,7 @@ class TotalEventos(generics.CreateAPIView):
                 elif 'concurs' in tipo_raw or 'contest' in tipo_raw:
                     result['concurso'] += count
                 else:
-                    # no mapeado: registrar para revisarlo más tarde (no rompe la respuesta)
-                    # Si quieres agrupar los no reconocidos, descomenta la línea siguiente:
-                    # result.setdefault('otros', 0); result['otros'] += count
+
                     pass
 
             return Response(result, status=200)
