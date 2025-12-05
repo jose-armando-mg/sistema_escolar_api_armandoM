@@ -12,6 +12,8 @@ from dev_sistema_escolar_api.views import maestros
 from dev_sistema_escolar_api.views import auth
 
 urlpatterns = [
+   # Django Admin
+        path('django-admin/', admin.site.urls),
    #Create Admin
         path('admin/', users.AdminView.as_view()),
     #Admin Data
