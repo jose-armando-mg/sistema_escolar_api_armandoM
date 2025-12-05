@@ -39,25 +39,18 @@ class EventoView(generics.CreateAPIView):
     @transaction.atomic
     def post(self, request, *args, **kwargs):
         try:
-            # Obtener el responsable - puede ser Maestro o Admin
+            # Obtener el responsable por User ID
             responsable_id = request.data.get('responsable_id')
             responsable = None
             
             if responsable_id:
-                # Intentar obtener como Maestro primero
                 try:
-                    maestro = Maestros.objects.get(id=responsable_id)
-                    responsable = maestro.user
-                except Maestros.DoesNotExist:
-                    # Si no es maestro, intentar como Admin
-                    try:
-                        admin = Administradores.objects.get(id=responsable_id)
-                        responsable = admin.user
-                    except Administradores.DoesNotExist:
-                        return Response(
-                            {"message": "El responsable especificado no existe"},
-                            status=status.HTTP_400_BAD_REQUEST
-                        )
+                    responsable = User.objects.get(id=responsable_id)
+                except User.DoesNotExist:
+                    return Response(
+                        {"message": "El responsable especificado no existe"},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
             else:
                 return Response(
                     {"message": "El responsable es requerido"},
