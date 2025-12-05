@@ -5,9 +5,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Mantén la clave secreta en variables de entorno en producción
 SECRET_KEY = '-_&+lsebec(whhw!%n@ww&1j=4-^j_if9x8$q778+99oz&!ms2'
 
-DEBUG = True  # en desarrollo
+DEBUG = False  # Cambia a False en producción
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "tu_usuario.pythonanywhere.com"]
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -36,6 +36,8 @@ MIDDLEWARE = [
 # Configuración de CORS: define orígenes permitidos y quita CORS_ORIGIN_ALLOW_ALL
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:4200',
+    'https://tu_dominio.vercel.app',  # URL de tu frontend en Vercel
+    'https://tu_usuario.pythonanywhere.com',
 ]
 CORS_ALLOW_CREDENTIALS = True
 
