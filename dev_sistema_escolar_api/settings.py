@@ -5,9 +5,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Mantén la clave secreta en variables de entorno en producción
 SECRET_KEY = '-_&+lsebec(whhw!%n@ww&1j=4-^j_if9x8$q778+99oz&!ms2'
 
-DEBUG = False  # Cambia a False en producción
+DEBUG = True  # True para ver errores en producción
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "tu_usuario.pythonanywhere.com"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "armandoMG.pythonanywhere.com"]
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -51,7 +51,7 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 STATIC_URL = "/static/"
-# STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 # TEMPLATES[0]["DIRS"] = [os.path.join(BASE_DIR, "templates")]
 # STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
@@ -95,8 +95,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
-
-STATIC_URL = '/static/'
 
 REST_FRAMEWORK = {
     'COERCE_DECIMAL_TO_STRING': False,
