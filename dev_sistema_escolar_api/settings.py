@@ -36,8 +36,8 @@ MIDDLEWARE = [
 # Configuración de CORS: define orígenes permitidos y quita CORS_ORIGIN_ALLOW_ALL
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:4200',
-    'https://tu_dominio.vercel.app',  # URL de tu frontend en Vercel
-    'https://tu_usuario.pythonanywhere.com',
+    'https://sistema-escolar-webapp-armando-mont.vercel.app',
+    'https://armandoMG.pythonanywhere.com',
 ]
 CORS_ALLOW_CREDENTIALS = True
 
@@ -76,8 +76,12 @@ WSGI_APPLICATION = 'dev_sistema_escolar_api.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.environ.get('DB_NAME', 'dev_sistema_escolar_db'),
+        'USER': os.environ.get('DB_USER', 'root'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'root'),
+        'HOST': os.environ.get('DB_HOST', '127.0.0.1'),
+        'PORT': os.environ.get('DB_PORT', '3306'),
         'OPTIONS': {
-            'read_default_file': os.path.join(BASE_DIR, "my.cnf"),
             'charset': 'utf8mb4',
         }
     }
